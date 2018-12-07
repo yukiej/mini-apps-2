@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Timechart from './components/timechart';
+import Chart from 'chart.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -13,19 +13,18 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
-    //do the api call to coindesk
     fetch('https://api.coindesk.com/v1/bpi/historical/close.json', {
       method: 'GET'
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data.bpi);
+      console.log(data);
       let history = data.bpi;
       let dates = [];
       let BPIs = [];
       for (var date in history) {
         dates.push(new Date(date))
-        BPIs.push(history[date])
+        BPIs.push(history[date].toFixed(2))
       }
       this.setState({
         dates: dates, 
@@ -35,7 +34,7 @@ class App extends React.Component {
     })
   }
 
-  render() {
+  makeChart() {
     var ctx = "chart";
     var data = {
       labels: this.state.dates,
@@ -47,6 +46,7 @@ class App extends React.Component {
         data: this.state.BPIs
       }]
     }
+    
     var timechart = new Chart(ctx, {
       type: 'line',
       data: data,
@@ -76,22 +76,20 @@ class App extends React.Component {
             display: true,
             scaleLabel: {
               display: true,
-              labelString: "Bitcoin Price Index"
+              labelString: "Bitcoin Price Index (USD)"
             }
           }]
         }
       }
     })
-    
+  }
 
+  render() {
+    this.makeChart();
     return (
         <div>
-          <h2>Last updated: {this.state.lastUpdated}</h2>
-          <h1>Bitcoin Price Index Over Last 31 Days</h1>
-          {/* <div>
-            <Timechart/>
-          </div> */}
-          
+          <h2>Bitcoin Price Index Over Last 31 Days</h2>
+          <h3>Last updated: {this.state.lastUpdated}</h3>
         </div>
     )
   }
@@ -102,5 +100,3 @@ ReactDOM.render(
   <App/>, 
   document.getElementById('app')
 )
-
-export default App;
