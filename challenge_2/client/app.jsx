@@ -29,12 +29,38 @@ class App extends React.Component {
 
   render() {
     // console.log("timechart is ", Timechart);
+    var ctx = "chart";
+    var data = {
+      labels: [new Date("2018-11-06"), new Date("2018-11-07"), new Date("2018-11-08"), new Date("2018-11-09")],
+      datasets: [{
+        data: [6420.865, 6420.865, 6420.86, 6420.86]
+      }]
+    }
+    var timechart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: {
+        scales: {
+          xAxes: [{
+            type: 'time',
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: "Date",
+            }
+          }]
+        }
+      }
+    })
+    
+
     return (
         <div>
-          Last updated: {this.state.lastUpdated}
-          <div>
+          <h2>Last updated: {this.state.lastUpdated}</h2>
+          <h1>Bitcoin Price Index: Last 31 DAYS</h1>
+          {/* <div>
             <Timechart/>
-          </div>
+          </div> */}
           
         </div>
     )
