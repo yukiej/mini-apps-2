@@ -7,7 +7,8 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      history: {},
+      dates: [],
+      BPIs: [],
       lastUpdated: ''
     }
   }
@@ -18,22 +19,28 @@ class App extends React.Component {
     })
     .then(res => res.json())
     .then(data => {
-      console.log("the data looks like: ", data);
-      //update state
+      console.log(data.bpi);
+      let history = data.bpi;
+      let dates = [];
+      let BPIs = [];
+      for (var date in history) {
+        dates.push(new Date(date))
+        BPIs.push(history[date])
+      }
       this.setState({
-        history: data.bpi, 
+        dates: dates, 
+        BPIs: BPIs,
         lastUpdated: data.time.updated
       })
     })
   }
 
   render() {
-    // console.log("timechart is ", Timechart);
     var ctx = "chart";
     var data = {
-      labels: [new Date("2018-11-06"), new Date("2018-11-07"), new Date("2018-11-08"), new Date("2018-11-09")],
+      labels: this.state.dates,
       datasets: [{
-        data: [6420.865, 6420.865, 6420.86, 6420.86]
+        data: this.state.BPIs
       }]
     }
     var timechart = new Chart(ctx, {
